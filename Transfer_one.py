@@ -112,3 +112,57 @@ plt.ylim([0,1])
 plt.plot(batch_stats_callback.batch_acc)
 
 plt.show()
+
+
+
+
+
+
+
+# ============================================================================
+# ==================================== 下面代码独立进行，加载模型后预测
+
+import tensorflow as tf
+import tensorflow.keras as keras
+import numpy as np
+import matplotlib.pyplot as plt
+
+IMAGE_SIZE = (224,224)
+
+image_generator = keras.preprocessing.image.ImageDataGenerator(rescale=1/255)
+image_data = image_generator.flow_from_directory(directory='../../.keras/datasets/flower_photos',target_size=IMAGE_SIZE)
+
+class_names = sorted(image_data.class_indices.items(), key=lambda pair:pair[1])
+class_names = np.array([key.title() for key, value in class_names])
+
+for image_batch, label_batch in image_data:
+    break
+# print(image_batch.shape)
+
+# print(class_names)
+
+model = keras.models.load_model(filepath='D:/ML/model/transfer_one')
+
+model = keras.Sequential([
+    model,
+    keras.layers.Softmax()
+])
+
+print(model.summary())
+predicted_batch = model.predict(image_batch)
+predicted_id = np.argmax(predicted_batch,axis=-1)
+predicted_label_batch = class_names[predicted_id]
+
+label_id = np.argmax(label_batch, axis=-1)
+True_label = class_names[label_id]
+
+plt.figure(figsize=(10,9))
+plt.subplots_adjust(hspace=0.5)
+for n in range(30):
+    plt.subplot(6,5,n+1)
+    plt.imshow(image_batch[n])
+    color = 'green' if predicted_id[n] == label_id[n] else 'red'
+    plt.title("pre{},Tr({})".format(predicted_label_batch[n].title(),True_label[n].title()), color=color)
+    plt.axis('off')
+plt.suptitle("Model predictions (green: correct, red: incorrect)")
+plt.show()
