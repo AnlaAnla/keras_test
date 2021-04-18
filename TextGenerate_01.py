@@ -3,6 +3,7 @@ import numpy as np
 import os
 import time
 
+# 记住下面的方法
 path_to_fiel = tf.keras.utils.get_file('shakespeare.txt', 'https://storage.googleapis.com/download.tensorflow.org/data/shakespeare.txt')
 # print(path_to_fiel)
 # 精彩的读取方式
